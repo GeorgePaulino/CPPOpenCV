@@ -29,11 +29,12 @@
                     "-c",
                     "make -C ./build"
                 ]
-            }
+            },
+            "dependsOn":["cmake"]
         },
         {
             "label": "build",
-            "dependsOn": ["make", "cmake"]
+            "dependsOn": ["make"]
         }
 
     ]
