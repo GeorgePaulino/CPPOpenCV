@@ -14,11 +14,13 @@ file( GLOB TankGame_SRC CONFIGURE_DEPENDS "src/*.h" "src/*.hpp" "src/*.cpp" )
 
 find_package( OpenCV REQUIRED )
 find_package( GTK2 REQUIRED )
+find_package(SDL2 REQUIRED)
 
+include_directories(${SDL2_INCLUDE_DIRS})
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 add_executable( TankGame ${TankGame_SRC} )
 
 target_link_libraries( TankGame ${OpenCV_LIBS} )
 target_link_libraries( TankGame ${GTK2_LIBRARIES} )
-
+target_link_libraries( TankGame ${SDL2_LIBRARIES} )
