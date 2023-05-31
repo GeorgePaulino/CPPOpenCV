@@ -1,9 +1,12 @@
 #include"OpenCVSource.hpp"
-#include"SDLSource.hpp"
+//#include"SDLSource.hpp"
+#include "SDLCodeTutorial.hpp"
+#include "tankgame.hpp";
 
 int main(int argc, char *args[])
 {
-    SDLTest();
-    OpenCVTest();
+    //mainTutorial();
+    maingame();
+
     return 0;
 }
