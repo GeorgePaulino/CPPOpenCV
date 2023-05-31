@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 
-const double ROTATION_SPEED = 90.0;                                      //Velocidade de rotação
+const double ROTATION_SPEED = 90.0;                                     //Velocidade de rotação
 
 int maingame(){
 
