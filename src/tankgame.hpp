@@ -3,52 +3,55 @@
 #include <iostream>
 #include <stdio.h>
 
-const double ROTATION_SPEED = 90.0;                                     //Velocidade de rotação
+const double ROTATION_SPEED = 90.0;         //Velocidade de rotação
 
 int maingame(){
 
-    SDL_Init(SDL_INIT_EVERYTHING);
+    SDL_Init(SDL_INIT_EVERYTHING);         //inicializa SDL
 
 
+    //Cria janela
     SDL_Window* window = SDL_CreateWindow(
         "Tank Game", 
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-        800, 800, 
+        1000, 800, 
         SDL_WINDOW_SHOWN
         );
-
+    
+    //renderizador
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);             
 
-    SDL_SetRenderDrawColor(renderer, 9, 20, 33, 255);              //renderizador
-
-    SDL_Surface* surface = SDL_LoadBMP("images/hello_world.bmp"); //criação de superficie
+    //superficie e textura de imagem
+    SDL_Surface* surface = SDL_LoadBMP("images/player01.bmp");        
     SDL_Texture* player = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 
     //Modificações da imagem
     SDL_Rect rect;
-    rect.x = 20;                                                  //posição x
-    rect.y = 20;                                                  //posição y
-    rect.w = surface->w;                                          //largura
-    rect.h = surface-> h;                                         //altura
+    rect.x = 20;            //posição x
+    rect.y = 20;            //posição y
+    rect.w = surface->w;    //largura
+    rect.h = surface-> h;   //altura
 
 
-    //rotação
-    double angle;
-    Uint32 startTime = SDL_GetTicks();                             //tempo inicial
+    double angle;                                  //angulo de rotação
+    Uint32 startTime = SDL_GetTicks();             //tempo inicial
 
     while(true){
         SDL_Event event;
         while(SDL_PollEvent(&event)){
-            if(event.type == SDL_QUIT){
+            if(event.type == SDL_QUIT){            //sair do SDL
                 exit(0);
-            }else if(event.type == SDL_MOUSEBUTTONDOWN){
-                rect.x +=20;
+            }else if(event.type == SDL_MOUSEMOTION){
+                //rect.x +=20;
             }
         }
 
         Uint32 currentTime = SDL_GetTicks();
-        double deltaTime = (currentTime - startTime) / 1000.0; // Converter para segundos
+
+        //Função de rotação
+        double deltaTime = (currentTime - startTime) / 1000.0;  // Converter para segundos
         double rotationAmout = ROTATION_SPEED * deltaTime;
         angle = rotationAmout;
 
@@ -56,7 +59,7 @@ int maingame(){
         SDL_RenderCopyEx(renderer, player, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
         SDL_RenderPresent(renderer);
 
-        angle +=1.0;
+        angle +=1.0;         //Rotação modificavel
         if(angle >=360.0)
         {
             angle -=360.0;
@@ -68,6 +71,7 @@ int maingame(){
     SDL_DestroyTexture(player);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_Quit;
+    SDL_Quit;                 //fim
+
     return 0;
 }
