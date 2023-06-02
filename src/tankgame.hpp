@@ -4,6 +4,8 @@
 #include <stdio.h>
 
 const double ROTATION_SPEED = 90.0;         //Velocidade de rotação
+const int WINDOW_WIDTH = 1000;              //largura janela
+const int WINDOW_HEIGHT = 800;              //altura janela
 
 int maingame(){
 
@@ -14,7 +16,7 @@ int maingame(){
     SDL_Window* window = SDL_CreateWindow(
         "Tank Game", 
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-        1000, 800, 
+        WINDOW_WIDTH, WINDOW_HEIGHT, 
         SDL_WINDOW_SHOWN
         );
     
@@ -29,8 +31,8 @@ int maingame(){
 
     //Modificações da imagem
     SDL_Rect rect;
-    rect.x = 20;            //posição x
-    rect.y = 20;            //posição y
+    rect.x = 500;            //posição x
+    rect.y = 400;            //posição y
     rect.w = surface->w;    //largura
     rect.h = surface-> h;   //altura
 
@@ -40,15 +42,48 @@ int maingame(){
 
     while(true){
         SDL_Event event;
-        while(SDL_PollEvent(&event)){
-            if(event.type == SDL_QUIT){            //sair do SDL
+        while(SDL_PollEvent(&event)){             //identificar e reagir aos eventos
+            if(event.type == SDL_QUIT)            //sair do SDL
+            {            
                 exit(0);
-            }else if(event.type == SDL_MOUSEMOTION){
-                //rect.x +=20;
+            }
+            if(event.type == SDL_KEYDOWN){       //botões de movimento (A,S,D,W)
+                SDL_Keycode key = event.key.keysym.sym;
+                if( key == SDLK_a )
+                {
+                    rect.x -=10;
+                }
+                if( key == SDLK_d )
+                {
+                    rect.x +=10;
+                }
+                if( key == SDLK_w )
+                {
+                    rect.y -= 10;
+                }
+                if( key == SDLK_s )
+                {
+                    rect.y += 10;
+                }
             }
         }
 
         Uint32 currentTime = SDL_GetTicks();
+
+        if( rect.x < 0)
+        {
+        std::cout << "bateu borda esqueda" << std::endl;   
+        }else if( rect.x + 100 > WINDOW_WIDTH)              //+100 devido ao comprimento da imagem
+        {
+         std::cout << "bateu borda direita" << std::endl;   
+        }
+        if( rect.y < 0)
+        {
+         std::cout << "bateu borda superior" << std::endl;   
+        }else if(rect.y + 100 > WINDOW_HEIGHT)              ////+100 devido ao comprimento da imagem
+        {
+         std::cout << "bateu borda inferior" << std::endl;   
+        }
 
         //Função de rotação
         double deltaTime = (currentTime - startTime) / 1000.0;  // Converter para segundos
@@ -56,7 +91,7 @@ int maingame(){
         angle = rotationAmout;
 
         SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, player, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopy(renderer, player, NULL, &rect);
         SDL_RenderPresent(renderer);
 
         angle +=1.0;         //Rotação modificavel
