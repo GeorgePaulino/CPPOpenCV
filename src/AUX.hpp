@@ -6,29 +6,50 @@
 
 #pragma once
 
-namespace Game
+#include <SDL.h>
+#include <math.h>
+
+/// @brief Movement of the object.
+class Dynamic
 {
-    /// @brief Vector with two dimensions.
-    class Vector
-    {
-    public:
-        int x;
-        int y;
-        Vector(int x, int y) : x(x), y(y) {}
-        virtual ~Vector() {}
-    };
+public:
+    SDL_Rect *rect;
 
-    /// @brief Size of the object.
-    class Size : public Vector
-    {
-    public:
-        Size(int x, int y) : Vector(x, y) {}
-    };
+    bool inMotion;
+    float speed = 1;
+    double angle = 0;
 
-    /// @brief Position of the object.
-    class Position : public Vector
+    Dynamic(SDL_Rect *rect) : rect(rect) {}
+
+    void Collision()
     {
-    public:
-        Position(int x, int y) : Vector(x, y) {}
-    };
-}
+        // deteca colisoẽs
+        /*if (rect.x < 0)
+        {
+            rect.x = 1;
+        }
+        else if (rect.x + 100 > WINDOW_WIDTH) //+w devido ao comprimento da imagem
+        {
+            moveRight = false;
+        }
+        if (rect.y < 0)
+        {
+            moveUp = false;
+        }
+        else if (player.rect.y + 100 > WINDOW_HEIGHT) //+h devido ao comprimento da imagem
+        {
+            moveDown = false;
+        }*/
+    }
+
+    void Movement()
+    {
+        double angle_rad = (angle + 180)* M_PI / 180;
+        rect->y += speed * sin(angle_rad);
+        rect->x += speed * cos(angle_rad);
+        std::cout << speed * angle << std::endl;
+        std::cout << speed * sin(angle_rad) << std::endl;
+        std::cout << speed * cos(angle_rad) << std::endl;
+        std::cout << "OSHOISDISHFOSDF" << std::endl;
+    }
+};

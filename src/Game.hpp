@@ -9,15 +9,20 @@
 
 #include "AUX.hpp"
 
-class Field{
-    Field(){
-    }
-    Game::Size size = Game::Size(600, 600);
-    std::vector<Game::Position> spawners;
-};
-
 class Spawn{
 public:
     int player;
-    Game::Position position;
+};
+
+class Field{
+    Field(){
+    }
+    std::vector<Spawn> spawners;
+};
+
+class Player{
+public:
+    SDL_Texture* texture;
+    SDL_Rect rect;
+    Dynamic dynamic = Dynamic(&rect);
 };
