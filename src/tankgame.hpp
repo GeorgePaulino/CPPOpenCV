@@ -3,8 +3,13 @@
 #include <iostream>
 #include <stdio.h>
 
-const int WINDOW_WIDTH = 1000;              //largura janela
+const int WINDOW_WIDTH = 800;              //largura janela
 const int WINDOW_HEIGHT = 800;              //altura janela
+
+
+class Player{
+    
+};
 
 int maingame(){
 
@@ -25,10 +30,10 @@ int maingame(){
 
 
     //superficie e textura de imagem
-    /*SDL_Surface* surface = SDL_LoadBMP("images/player01.bmp");        
+    SDL_Surface* surface = SDL_LoadBMP("images/player01.bmp");        
     SDL_Texture* player = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);    
-    SDL_FreeSurface(surface);*/
+    SDL_FreeSurface(surface);
 
     //Modificações da imagem
     SDL_Rect rect;
@@ -37,16 +42,15 @@ int maingame(){
     rect.w = 100;            //largura
     rect.h = 100;            //altura
 
+    bool moveLeft = false;
+    bool moveRight = false;
+    bool moveUp = false;
+    bool moveDown = false;
 
-    SDL_Rect rect2;
-    rect.x = 100;            //posição x
-    rect.y = 100;            //posição y
-    rect.w = 50;     //largura
-    rect.h = 50;    //altura
+    double angle = 0.0;
 
     while(true){
         SDL_Event event;
-
 
         while(SDL_PollEvent(&event)){              //identificar e reagir aos eventos
             if(event.type == SDL_QUIT)             //sair do SDL
@@ -57,59 +61,91 @@ int maingame(){
                 SDL_Keycode key = event.key.keysym.sym;
                 if( key == SDLK_a )
                 {
-                    rect.x -=10;
+                    moveLeft = true;
+                    moveRight = false;
+                    moveUp = false;
+                    moveDown = false;
                 }
                 if( key == SDLK_d )
                 {
-                    rect.x +=10;
+                    moveLeft = false;
+                    moveRight = true;
+                    moveUp = false;
+                    moveDown = false;
                 }
                 if( key == SDLK_w )
                 {
-                    rect.y -= 10;
+                    moveLeft = false;
+                    moveRight = false;
+                    moveUp = true;
+                    moveDown = false;
                 }
                 if( key == SDLK_s )
                 {
-                    rect.y += 10;
+                    moveLeft = false;
+                    moveRight = false;
+                    moveUp = false;
+                    moveDown = true;
                 }
             }
         } 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+
+    //movimento continuo
+    if (moveLeft) {
+        rect.x -= 5;
+        angle = 0.0;
+    }
+    if (moveRight) {
+        rect.x += 5;
+        angle = 180.0;
+    }
+    if (moveUp) {
+        rect.y -= 5;
+        angle = 90.0;
+    }
+    if (moveDown) {
+        rect.y += 5;
+        angle = -90.0;
+    }
+
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);    
         SDL_RenderClear(renderer);
 
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderFillRect(renderer, &rect);
-        SDL_RenderPresent(renderer);
 
         //deteca colisoẽs
         if( rect.x < 0)
         {
-        std::cout << "bateu borda esqueda" << std::endl;  
+        std::cout << "bateu borda esqueda" << std::endl; 
+        moveLeft = false; 
         }
-        else if( rect.x + 50 > WINDOW_WIDTH)              //+w devido ao comprimento da imagem
+        else if( rect.x + 100 > WINDOW_WIDTH)              //+w devido ao comprimento da imagem
         {
-         std::cout << "bateu borda direita" << std::endl;   
+         std::cout << "bateu borda direita" << std::endl;  
+         moveRight = false; 
         }
         if( rect.y < 0)
         {
          std::cout << "bateu borda superior" << std::endl;   
+         moveUp = false;
         }
-        else if(rect.y + 50 > WINDOW_HEIGHT)              //+h devido ao comprimento da imagem
+        else if(rect.y + 100 > WINDOW_HEIGHT)              //+h devido ao comprimento da imagem
         {
-         std::cout << "bateu borda inferior" << std::endl;   
+         std::cout << "bateu borda inferior" << std::endl; 
+        moveDown = false;
         }
 
 
-        /*SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, player, NULL, &rect2);
-        SDL_RenderPresent(renderer);*/
+        SDL_RenderClear(renderer);
+        SDL_RenderCopyEx(renderer, player, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
+        SDL_RenderPresent(renderer);
 
-        SDL_Delay(1);
+        SDL_Delay(25);                                     //tempo de renderização
     }
 
-    /*SDL_DestroyTexture(player);*/
+    SDL_DestroyTexture(player);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_Quit;                 //fim
+    SDL_Quit;                                              //fim
 
     return 0;
 }
