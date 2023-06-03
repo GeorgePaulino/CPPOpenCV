@@ -1,12 +1,15 @@
 #include"OpenCVSource.hpp"
 //#include"SDLSource.hpp"
 #include "SDLCodeTutorial.hpp"
-#include "tankgame.hpp";
+#include "tankgame.hpp"
+#include "OpenCV/Core.hpp"
 
 int main(int argc, char *args[])
 {
+    OpenCVCore("images/lines.jpeg");
+
     //mainTutorial();
-   maingame();
+    maingame();
 
     return 0;
 }
