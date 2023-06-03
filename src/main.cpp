@@ -6,7 +6,7 @@
 int main(int argc, char *args[])
 {
     //mainTutorial();
-    maingame();
+   maingame();
 
     return 0;
 }
