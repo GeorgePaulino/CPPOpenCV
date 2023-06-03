@@ -20,4 +20,4 @@ class Spawn{
 public:
     int player;
     Game::Position position;
-}
+};
