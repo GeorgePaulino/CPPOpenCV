@@ -15,8 +15,7 @@ public:
 };
 
 class Field{
-    Field(){
-    }
+    Field() {}
     std::vector<Spawn> spawners;
 };
 

@@ -35,9 +35,10 @@ cv::Mat CleanLines(cv::Mat image){
 
 int** PixelByPixel(cv::Mat image){
     int **field = new int*[600];
-    for (int y = 0; y < image.rows; ++y)
+    for (int y = 0; y < 600; ++y)
     {
-        for (int x = 0; x < image.cols; ++x)
+        field[0] = new int[600];
+        for (int x = 0; x < 600; ++x)
         {
             cv::Vec3b pixel = image.at<cv::Vec3b>(y, x);
             uchar blue = pixel[0];
@@ -45,13 +46,12 @@ int** PixelByPixel(cv::Mat image){
             uchar red = pixel[2];
             if(static_cast<int>(red) == 255 &&
                 static_cast<int>(green) == 255 &&
-                static_cast<int>(blue) == 255){
-                    continue;
+                static_cast<int>(blue) == 255) {
+                    field[x][y] = 0;
             }
-            std::cout << "Pixel at (" << x << ", " << y << "): ";
-            std::cout << "R=" << static_cast<int>(red) << ", ";
-            std::cout << "G=" << static_cast<int>(green) << ", ";
-            std::cout << "B=" << static_cast<int>(blue) << std::endl;
+            else{
+                field[x][y] = 1;
+            }
         }
     }
     return field;
