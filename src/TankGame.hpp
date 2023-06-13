@@ -7,6 +7,22 @@
 const int WINDOW_WIDTH = 800;  // largura janela
 const int WINDOW_HEIGHT = 800; // altura janela
 
+class Fire {
+    public:
+
+    void fire(){        
+        SDL_Rect rectf;
+        rectf.h = rectf.w = 10;
+        rectf.x = 10;
+        rectf.y = 10;
+
+
+        SDL_Renderer* renderer;
+        SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
+        SDL_RenderFillRect(renderer, &rectf);
+        }
+};
+
 int maingame()
 {
     Player player = Player();
@@ -35,10 +51,6 @@ int maingame()
     player.rect.w = 100; // largura
     player.rect.h = 100; // altura
 
-    bool moveLeft = false;
-    bool moveRight = false;
-    bool moveUp = false;
-    bool moveDown = false;
 
     double angle = 0.0;
 
@@ -53,17 +65,22 @@ int maingame()
                 exit(0);
             }
             if(event.type == SDL_KEYUP){
-                
                 SDL_Keycode key = event.key.keysym.sym;
-                player.dynamic.inMotion = !(key == SDLK_SPACE);
 
+                player.dynamic.inMotion = !(key == SDLK_SPACE);
             }
 
             if (event.type == SDL_KEYDOWN)
-            { // botões de movimento (A,S,D,W)
+            {
                 SDL_Keycode key = event.key.keysym.sym;
-                
+
                 player.dynamic.inMotion = key == SDLK_SPACE;
+            }
+
+            if(event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                Fire inFire;
+                inFire.fire();
             }
         }
 
@@ -74,34 +91,12 @@ int maingame()
             player.dynamic.angle += 1;
         }
 
+
+
+
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-        // deteca colisoẽs
-        if (player.rect.x < 0)
-        {
-            std::cout << "bateu borda esqueda" << std::endl;
-            moveLeft = false;
-        }
-        else if (player.rect.x + 100 > WINDOW_WIDTH) //+w devido ao comprimento da imagem
-        {
-            std::cout << "bateu borda direita" << std::endl;
-            moveRight = false;
-        }
-        if (player.rect.y < 0)
-        {
-            std::cout << "bateu borda superior" << std::endl;
-            moveUp = false;
-        }
-        else if (player.rect.y + 100 > WINDOW_HEIGHT) //+h devido ao comprimento da imagem
-        {
-            std::cout << "bateu borda inferior" << std::endl;
-            moveDown = false;
-        }
-
         SDL_RenderClear(renderer);
-
         SDL_RenderCopyEx(renderer, player.texture, NULL, &player.rect, player.dynamic.angle, NULL, SDL_FLIP_NONE);
-
         SDL_RenderPresent(renderer);
 
         SDL_Delay(25); // tempo de renderização
@@ -110,7 +105,8 @@ int maingame()
     SDL_DestroyTexture(player.texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_Quit; // fim
+    SDL_Quit;
+     // fim
 
     return 0;
 }

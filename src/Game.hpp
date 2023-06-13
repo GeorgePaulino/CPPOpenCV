@@ -24,4 +24,5 @@ public:
     SDL_Texture* texture;
     SDL_Rect rect;
     Dynamic dynamic = Dynamic(&rect);
+    
 };

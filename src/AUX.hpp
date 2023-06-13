@@ -52,4 +52,18 @@ public:
         std::cout << speed * cos(angle_rad) << std::endl;
         std::cout << "OSHOISDISHFOSDF" << std::endl;
     }
+
+        void fire()
+    {   
+        SDL_Rect rectf;
+        rectf.h = rectf.w = 10;
+        rectf.x = rect->x;
+        rectf.y = rect->y;
+
+
+        SDL_Renderer* renderer;
+        SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
+        SDL_RenderFillRect(renderer, &rectf);
+    }
+
 };
