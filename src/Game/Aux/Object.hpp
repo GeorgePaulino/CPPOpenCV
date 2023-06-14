@@ -12,6 +12,7 @@ public:
                  rect.y >= collider.y + collider.h ||
                  rect.x + rect.w <= collider.x ||
                  rect.x >= collider.x + collider.w);
+        
     }
 
     bool CheckWindowLimits(int w_h, int w_w){

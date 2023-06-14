@@ -118,6 +118,15 @@ public:
                 projetile->Movement();
             }
         }
+
+        for(int i = 0; i < objects.size(); i++){
+            for(int j = i + 1; j < objects.size(); j++){
+                if(objects[i]->CheckCollision(objects[j]->rect)){
+                    objects[i]->CollisionEvent(objects[j]->type);
+                }
+            }
+        }
+
     }
 };
 

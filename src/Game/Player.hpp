@@ -13,6 +13,9 @@
 #include "Aux/Object.hpp"
 #include "Projetile.hpp"
 
+#define P_W 75
+#define P_H 75
+
 class Player : public Object
 {
 public:
@@ -33,8 +36,8 @@ public:
         {
             rect.x = 300;
             rect.y = 300;
-            rect.w = 100;
-            rect.h = 52;
+            rect.w = P_W;
+            rect.h = P_H;
             key = SDLK_SPACE;
             texture = IMG_LoadTexture(*renderer, "images/tank1.png");
         }
@@ -42,8 +45,8 @@ public:
         {
             rect.x = 50;
             rect.y = 50;
-            rect.w = 100;
-            rect.h = 52;
+            rect.w = P_W;
+            rect.h = P_H;
             key = SDLK_0;
             texture = IMG_LoadTexture(*renderer, "images/tank2.png");
         }
