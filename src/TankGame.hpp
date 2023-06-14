@@ -2,111 +2,128 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdio.h>
-#include "Game.hpp"
+#include <vector>
 
-const int WINDOW_WIDTH = 800;  // largura janela
-const int WINDOW_HEIGHT = 800; // altura janela
+#include "Game/Player.hpp"
 
-class Fire {
-    public:
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 800
 
-    void fire(){        
-        SDL_Rect rectf;
-        rectf.h = rectf.w = 10;
-        rectf.x = 10;
-        rectf.y = 10;
-
-
-        SDL_Renderer* renderer;
-        SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
-        SDL_RenderFillRect(renderer, &rectf);
-        }
-};
-
-int maingame()
+class Field
 {
-    Player player = Player();
-    SDL_Init(SDL_INIT_EVERYTHING); // inicializa SDL
+public:
+    std::vector<Object *> objects;
+    std::vector<Player *> players;
+    SDL_Renderer *renderer = NULL;
+    SDL_Window *window = NULL;
+    SDL_Texture *background = NULL;
+    SDL_Rect rect;
 
-    // Cria janela
-    SDL_Window *window = SDL_CreateWindow(
-        "Tank Game",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT,
-        SDL_WINDOW_SHOWN);
+    Field()
+    {
+        // Initializing
+        SDL_Init(SDL_INIT_EVERYTHING);
+        IMG_Init(IMG_INIT_PNG);
 
-    // renderizador
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        window = SDL_CreateWindow(
+            "Tank Game",
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            WINDOW_WIDTH, WINDOW_HEIGHT,
+            SDL_WINDOW_SHOWN);
 
-    // superficie e textura de imagem
-    SDL_Surface *surface = SDL_LoadBMP("images/player01.bmp");
-    player.texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_FreeSurface(surface);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    // Modificações da imagem
-    player.rect.x = 300; // posição x
-    player.rect.y = 300; // posição y
-    player.rect.w = 100; // largura
-    player.rect.h = 100; // altura
+        // Loading Texture
 
+        background = IMG_LoadTexture(renderer, "images/bg.png");
+        rect.x = 0;
+        rect.y = 0;
+        rect.h = 800;
+        rect.w = 800;
 
-    double angle = 0.0;
+        // Adding Players
+        players.push_back(new Player(0, &renderer));
+        players.push_back(new Player(1, &renderer));
 
-    while (true)
+        for(auto player : players){
+            objects.push_back(player);
+        }
+
+        //
+    }
+
+    ~Field()
+    {
+        IMG_Quit();
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+    }
+
+    void Loop()
+    {
+        while (true)
+        {
+            Events();
+            SDL_RenderClear(renderer);
+            SDL_RenderCopyF(renderer, background, &rect, NULL);
+            for(auto player: players){
+                SDL_RenderCopyExF(renderer, player->texture, NULL, &player->rect, player->angle, NULL, SDL_FLIP_NONE);
+                for(auto projetile: player->projetiles){
+                    SDL_RenderCopyExF(renderer, projetile->texture, NULL, &projetile->rect, projetile->angle, NULL, SDL_FLIP_NONE);
+                }
+            }
+            SDL_RenderPresent(renderer);
+            SDL_Delay(25);
+        }
+    }
+
+    void Events()
     {
         SDL_Event event;
-
         while (SDL_PollEvent(&event))
-        {                               // identificar e reagir aos eventos
-            if (event.type == SDL_QUIT) // sair do SDL
+        {
+            // Close
+            if (event.type == SDL_QUIT)
             {
                 exit(0);
             }
+
+            // Key Up
+
             if(event.type == SDL_KEYUP){
                 SDL_Keycode key = event.key.keysym.sym;
-
-                player.dynamic.inMotion = !(key == SDLK_SPACE);
+                for(auto player : players){
+                    player->InMotionCheck(key, true);
+                }
             }
+
+            // Key Pressed
 
             if (event.type == SDL_KEYDOWN)
             {
                 SDL_Keycode key = event.key.keysym.sym;
-
-                player.dynamic.inMotion = key == SDLK_SPACE;
-            }
-
-            if(event.type == SDL_MOUSEBUTTONDOWN)
-            {
-                Fire inFire;
-                inFire.fire();
+                for(auto player : players){
+                    player->InMotionCheck(key, false);
+                }
             }
         }
 
-        if(player.dynamic.inMotion){
-            player.dynamic.Movement();
+        for(auto player: players){
+            player->Movement();
+            if(player->CheckWindowLimits(WINDOW_HEIGHT, WINDOW_WIDTH))
+                player->CollisionEvent(-1);
+            for(auto projetile: player->projetiles){
+                projetile->Movement();
+            }
         }
-        else{
-            player.dynamic.angle += 1;
-        }
-
-
-
-
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, player.texture, NULL, &player.rect, player.dynamic.angle, NULL, SDL_FLIP_NONE);
-        SDL_RenderPresent(renderer);
-
-        SDL_Delay(25); // tempo de renderização
     }
+};
 
-    SDL_DestroyTexture(player.texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit;
-     // fim
-
+int maingame()
+{
+    Field field = Field();
+    field.Loop();
     return 0;
 }
