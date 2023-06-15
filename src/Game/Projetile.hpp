@@ -1,10 +1,19 @@
+#pragma once
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <math.h>
+#include <algorithm>
+
+#include "Player.hpp"
+
+class Player;
 
 class Projetile : public Object
 {
 public:
+
+    Player *player = NULL;
     SDL_Texture *texture = NULL;
 
     double angle = 0;
@@ -13,13 +22,13 @@ public:
     bool destroy = false;
 
 
-    Projetile(int p, int x, int y, int angle, SDL_Renderer **renderer) : angle(angle)
+    Projetile(Player *p, int pN, float x, float y, double angle, SDL_Renderer **renderer) : Object(1, pN), angle(angle)
     {
-        int type = 1;
+        player = p;
         texture = IMG_LoadTexture(*renderer, "images/projetile.png");
         
-        if(p == 0) SDL_SetTextureColorMod(texture, 150, 150, 255);
-        else if(p == 1) SDL_SetTextureColorMod(texture, 255, 150, 150);
+        if(pN == 0) SDL_SetTextureColorMod(texture, 150, 150, 255);
+        else if(pN == 1) SDL_SetTextureColorMod(texture, 255, 150, 150);
 
         rect.w = 10;
         rect.h = 10;
@@ -42,7 +51,5 @@ public:
         rect.x += speed * cos(angle_rad);
     }
 
-    void CollisionEvent(int type) override {
-        destroy = true;
-    }
+    void CollisionEvent(int type) override;
 };
